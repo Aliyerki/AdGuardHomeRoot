@@ -201,10 +201,12 @@ jobs:
           git checkout -B main origin/main
           cp "$RUNNER_TEMP/update.json" update.json
 
-          if git diff --quiet -- update.json; then
+          # Staged before comparing: git diff ignores untracked files, so the
+          # very first update.json would look unchanged and never be committed.
+          git add update.json
+          if git diff --cached --quiet -- update.json; then
             echo "update.json already points at $VERSION"
             exit 0
           fi
-          git add update.json
           git commit -m "chore: point updates at $VERSION (AdGuardHome $AGH_VERSION)"
           git push origin main

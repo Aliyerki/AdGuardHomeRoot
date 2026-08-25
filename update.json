@@ -1,0 +1,7 @@
+{
+  "versionCode": 20260825,
+  "version": "20260825",
+  "zipUrl": "https://github.com/Aliyerki/AdGuardHomeRoot/releases/download/20260825/AdGuardHomeForRoot_arm64.zip",
+  "changelog": "https://raw.githubusercontent.com/Aliyerki/AdGuardHomeRoot/main/changelog.md",
+  "adguardHome": "v0.107.79"
+}
