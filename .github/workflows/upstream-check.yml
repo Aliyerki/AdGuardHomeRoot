@@ -1,7 +1,8 @@
 name: Check upstream
 
-# Fork-only workflow. GitHub never tells a fork that its parent moved, so this
-# asks once a week and opens an issue when there is something to sync.
+# This repo carries patches on top of twoone-3/AdGuardHomeForRoot but is not a
+# GitHub fork, so nothing tells us when that project moves. This asks once a
+# week and opens an issue when there is something to sync.
 
 on:
   schedule:
@@ -52,7 +53,7 @@ jobs:
         run: |
           set -euo pipefail
           gh label create upstream-sync \
-            --description "Upstream has changes this fork has not picked up" \
+            --description "Upstream has changes this repo has not picked up" \
             --color 0e8a16 --force
 
           # Built with printf rather than a heredoc: heredoc bodies have to start
@@ -60,7 +61,7 @@ jobs:
           # YAML block scalar, which silently breaks the whole workflow file.
           today="$(date -u +%Y%m%d)"
           {
-            printf 'Upstream (`twoone-3/AdGuardHomeForRoot`) is **%s commit(s)** ahead of this fork.\n\n' "$COUNT"
+            printf 'Upstream (`twoone-3/AdGuardHomeForRoot`) is **%s commit(s)** ahead of this repo.\n\n' "$COUNT"
             printf '%s\n\n' "$COMMITS"
             printf 'To pick them up:\n\n'
             printf '```bash\n'

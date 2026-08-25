@@ -1,4 +1,4 @@
-# AdGuardHome for Root — fork de Aliyerki
+# AdGuardHome for Root (Aliyerki)
 
 [English](README.md) | Español
 
@@ -6,18 +6,28 @@
 ![arm-v7](https://img.shields.io/badge/arm--v7-soportado-ffa500?logo=linux&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-9b5de5?logo=opensourceinitiative&logoColor=white)
 
-Fork de [twoone-3/AdGuardHomeForRoot](https://github.com/twoone-3/AdGuardHomeForRoot)
-con correcciones al corte de DNS que sufría el módulo en cada arranque.
+Basado en [twoone-3/AdGuardHomeForRoot](https://github.com/twoone-3/AdGuardHomeForRoot),
+con el corte de DNS que sufría el módulo en cada arranque ya corregido, y una
+compilación que sigue sola las versiones de AdGuardHome.
 
 Todo el mérito del módulo original es de [twoone3](https://github.com/twoone-3);
-este fork solo añade los parches descritos abajo. Esta página trata de **lo que
-cambia el fork**; la documentación del módulo en sí está en el README original en
+aquí solo se añaden los parches descritos abajo. Esta página trata de **lo que
+cambia respecto al original**; la documentación del módulo en sí está en el README original en
 [inglés](README_en.md) o [chino](README_zh.md), y en la
 [guía](docs/index.md).
 
+## Sobre el módulo
+
+AdGuardHome for Root ejecuta [AdGuardHome](https://github.com/AdguardTeam/AdGuardHome)
+como módulo root (Magisk, KernelSU o APatch), dándole al teléfono un servidor DNS
+local que bloquea anuncios, malware y rastreadores — sin ocupar la ranura de VPN,
+así que convive con las apps de proxy. Filtra con la lista
+[AWAvenue Ads Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule) y el panel
+de control está en <http://127.0.0.1:3000>.
+
 ---
 
-## Por qué existe este fork
+## Por qué existe
 
 Tras cada reinicio el teléfono se quedaba **sin internet en el navegador y en
 Google Play**, mientras otras apps sí funcionaban. Poner y quitar el modo avión
@@ -75,10 +85,15 @@ original.
 | `src/scripts/iptables.sh` | `REJECT` en lugar de `DROP` para el DNS IPv6, para que el cliente caiga a IPv4 al instante. Vuelve a `DROP` si el kernel no soporta `REJECT`. |
 | `src/settings.conf` | Nueva clave `startup_timeout` (120 s). Zona horaria `America/Mexico_City`. |
 | `src/bin/AdGuardHome.yaml` | Upstreams Cloudflare y Google por DoH con **IP literal**, así no hace falta resolver nada por bootstrap al arrancar. |
-| `fork-brand.sh` | Pone el nombre, el autor y la URL de actualización del fork en `module.prop` **al compilar**. Así `src/module.prop` y `version.json` quedan idénticos a los del original en git y sus subidas de versión mensuales ya no chocan al sincronizar. |
+| `brand.sh` | Pone el nombre, el autor y la URL de actualización en `module.prop` **al compilar**. Así `src/module.prop` y `version.json` quedan idénticos a los del original en git y sus subidas de versión mensuales ya no chocan al sincronizar. |
 | `pack.sh` | Compilar en Linux (el original solo trae `pack.ps1` de PowerShell). |
-| `sync-upstream.sh` | Traer las novedades del repo original sin perder estos parches. |
-| `.github/workflows/upstream-check.yml` | Abre un issue aquí cuando el original saca cambios; GitHub no avisa a los forks por su cuenta. |
+| `.github/workflows/pack.yml` | Comprueba a diario si AdGuardTeam publicó un AdGuardHome nuevo y, si es así, compila y publica solo. |
+| `.github/workflows/upstream-check.yml` | Abre un issue aquí cuando el original saca cambios; nada vigila ese repo por su cuenta. |
+| `sync-upstream.sh` | Traer esas novedades sin perder estos parches. |
+
+Solo las dos primeras filas son correcciones de errores. La zona horaria y los
+DNS son configuración personal y **no** forman parte de los parches enviados al
+proyecto original.
 
 ### Resultado medido, en arranque en frío
 
@@ -121,13 +136,20 @@ flasheable. Usa `zip` si está instalado y `python3` si no.
 
 ## Publicar una versión
 
-Empujar un tag de 8 dígitos es todo el proceso: GitHub Actions compila las dos
-arquitecturas, publica la release y actualiza `update.json`, que es el
-archivo que consultan los módulos ya instalados:
+De dos formas, las dos acaban en una release publicada y en un `update.json`
+actualizado, que es el archivo que consultan los módulos ya instalados:
 
-```bash
-git tag 20260901 && git push origin 20260901
-```
+- **Automática.** Un job diario compara la última versión de AdGuardHome con la
+  que usó la última compilación. Cuando AdGuardTeam publica una nueva, compila
+  las dos arquitecturas y publica sin que haya que pedírselo.
+- **A mano.** Empujar un tag de 8 dígitos:
+
+  ```bash
+  git tag 20260901 && git push origin 20260901
+  ```
+
+Cada compilación descarga el `releases/latest` de AdGuardHome, así que ningún
+zip lleva nunca un binario viejo.
 
 ## Actualizar desde el repo original
 
@@ -150,7 +172,7 @@ cada release suya.
 ## Estado en el proyecto original
 
 Los dos arreglos genéricos se enviaron como pull requests separados, sin las
-partes específicas de este fork (mis DNS, mi zona horaria, mi `updateJson`):
+partes propias de este repo (mis DNS, mi zona horaria, mi `updateJson`):
 
 - [#77](https://github.com/twoone-3/AdGuardHomeForRoot/pull/77) — la carrera de arranque
 - [#78](https://github.com/twoone-3/AdGuardHomeForRoot/pull/78) — el `REJECT` de IPv6

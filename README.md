@@ -171,7 +171,7 @@ every upstream release used to collide.
 ## Upstream status
 
 The two generic fixes were submitted as separate pull requests, without the
-fork-specific parts (custom DNS, timezone, `updateJson`):
+parts specific to this project (custom DNS, timezone, `updateJson`):
 
 - [#77](https://github.com/twoone-3/AdGuardHomeForRoot/pull/77) — the boot race
 - [#78](https://github.com/twoone-3/AdGuardHomeForRoot/pull/78) — the IPv6 `REJECT`
