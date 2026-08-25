@@ -1,4 +1,4 @@
-# AdGuardHome for Root — Aliyerki's fork
+# AdGuardHome for Root (Aliyerki)
 
 English | [Español](README_es.md)
 
@@ -6,12 +6,13 @@ English | [Español](README_es.md)
 ![arm-v7](https://img.shields.io/badge/arm--v7-supported-ffa500?logo=linux&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-9b5de5?logo=opensourceinitiative&logoColor=white)
 
-Fork of [twoone-3/AdGuardHomeForRoot](https://github.com/twoone-3/AdGuardHomeForRoot)
-that fixes the DNS blackout the module caused on every boot.
+Based on [twoone-3/AdGuardHomeForRoot](https://github.com/twoone-3/AdGuardHomeForRoot),
+with the DNS blackout that module caused on every boot fixed, and a build that
+follows AdGuardHome releases on its own.
 
 All credit for the module itself goes to [twoone3](https://github.com/twoone-3);
-this fork only adds the patches described below. This page covers **what the fork
-changes**; for the module's own documentation see the original README in
+this project only adds the patches described below. This page covers **what is
+different here**; for the module's own documentation see the original README in
 [English](README_en.md) or [简体中文](README_zh.md), and the
 [docs](docs/index.md).
 
@@ -26,7 +27,7 @@ the control panel lives at <http://127.0.0.1:3000>.
 
 ---
 
-## Why this fork exists
+## Why this exists
 
 After every reboot the phone had **no internet in the browser or Google Play**,
 while other apps worked fine. Toggling airplane mode fixed it until the next
@@ -83,10 +84,11 @@ described in upstream
 | `src/scripts/iptables.sh` | `REJECT` instead of `DROP` for IPv6 DNS, so the client falls back to IPv4 immediately. Falls back to `DROP` where the kernel lacks `REJECT`. |
 | `src/settings.conf` | New `startup_timeout` key (120s). Timezone set to `America/Mexico_City`. |
 | `src/bin/AdGuardHome.yaml` | Cloudflare and Google DoH upstreams using **literal IPs**, so nothing needs resolving via bootstrap at startup. |
-| `fork-brand.sh` | Stamps the fork's name, author and update URL onto `module.prop` **at build time**. `src/module.prop` and `version.json` stay byte-identical to upstream in git, so upstream's monthly version bumps to those files never conflict on a sync. |
+| `brand.sh` | Stamps this project's name, author and update URL onto `module.prop` **at build time**. `src/module.prop` and `version.json` stay byte-identical to upstream in git, so upstream's monthly version bumps to those files never conflict when changes are picked up. |
 | `pack.sh` | Builds on Linux (upstream ships only the PowerShell `pack.ps1`). |
-| `sync-upstream.sh` | Pulls upstream changes without losing these patches. |
-| `.github/workflows/upstream-check.yml` | Opens an issue here when upstream gets ahead — GitHub does not notify forks on its own. |
+| `.github/workflows/pack.yml` | Checks daily whether AdGuardTeam published a new AdGuardHome and, if so, builds and releases on its own. |
+| `.github/workflows/upstream-check.yml` | Opens an issue here when twoone-3 gets ahead — nothing watches that repo otherwise. |
+| `sync-upstream.sh` | Pulls those changes in without losing these patches. |
 
 Note that only the first two rows are bug fixes. The timezone and the DNS
 upstreams are personal configuration and are deliberately **not** part of the
@@ -109,7 +111,7 @@ normal domains resolve fine.
 ## Installing
 
 1. Download the zip for your architecture from
-   [Releases](https://github.com/Aliyerki/AdGuardHomeForRoot/releases/latest)
+   [Releases](https://github.com/Aliyerki/AdGuardHomeRoot/releases/latest)
    (`arm64` for most current phones).
 2. Make sure **Private DNS is off**: Settings → Network & internet → Private DNS.
    If it is on, it bypasses the module.
@@ -133,18 +135,25 @@ flashable zip. Uses `zip` when available and `python3` otherwise.
 
 ## Releasing
 
-Pushing an 8-digit date tag is the whole release process — GitHub Actions builds
-both architectures, publishes the release and updates `fork-version.json`, which
-is what installed modules poll for updates:
+Two ways, both ending in a published release plus an updated `update.json`,
+which is the file installed modules poll:
 
-```bash
-git tag 20260901 && git push origin 20260901
-```
+- **Automatic.** A daily job compares the latest AdGuardHome release against the
+  one the last build used. When AdGuardTeam ships a new version, it builds both
+  architectures and releases without being asked.
+- **On demand.** Push an 8-digit date tag:
 
-## Syncing with upstream
+  ```bash
+  git tag 20260901 && git push origin 20260901
+  ```
 
-Nothing pulls upstream changes on a schedule; a weekly job only opens an issue
-here when there is something to pick up. Doing it:
+Every build downloads AdGuardHome's `releases/latest`, so no zip ever carries a
+stale binary.
+
+## Picking up changes from twoone-3
+
+Nothing does this on a schedule; a weekly job only opens an issue here when
+there is something to pick up. Doing it:
 
 ```bash
 ./sync-upstream.sh          # review the changes
@@ -173,7 +182,7 @@ those local patches become unnecessary.
 ## Credits
 
 Original module by [twoone3](https://github.com/twoone-3/AdGuardHomeForRoot),
-MIT licensed, same as this fork.
+MIT licensed, same as this project.
 
 - [AdGuardHome](https://github.com/AdguardTeam/AdGuardHome)
 - [AWAvenue Ads Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule)

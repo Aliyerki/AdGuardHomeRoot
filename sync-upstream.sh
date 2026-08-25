@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Rebase this fork's patches on top of twoone-3/AdGuardHomeForRoot.
+# Rebase this project's patches on top of twoone-3/AdGuardHomeForRoot.
 #
-# The fork carries a small set of local commits on top of upstream main. Keeping
+# This repo carries a small set of local commits on top of upstream main. Keeping
 # them as a rebased stack (rather than merging upstream in) keeps the diff
 # readable and makes the patches easy to send upstream later.
 #

@@ -97,7 +97,7 @@ dirección nula y los dominios normales resuelven.
 ## Instalación
 
 1. Descarga el zip de tu arquitectura desde
-   [Releases](https://github.com/Aliyerki/AdGuardHomeForRoot/releases/latest)
+   [Releases](https://github.com/Aliyerki/AdGuardHomeRoot/releases/latest)
    (`arm64` para la mayoría de teléfonos actuales).
 2. Comprueba que **DNS privado esté desactivado**: Ajustes → Red e internet →
    DNS privado. Si está activo, se salta el módulo.
@@ -122,7 +122,7 @@ flasheable. Usa `zip` si está instalado y `python3` si no.
 ## Publicar una versión
 
 Empujar un tag de 8 dígitos es todo el proceso: GitHub Actions compila las dos
-arquitecturas, publica la release y actualiza `fork-version.json`, que es el
+arquitecturas, publica la release y actualiza `update.json`, que es el
 archivo que consultan los módulos ya instalados:
 
 ```bash

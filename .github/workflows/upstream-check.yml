@@ -68,7 +68,7 @@ jobs:
             printf './sync-upstream.sh --push\n'
             printf 'git tag %s && git push origin %s\n' "$today" "$today"
             printf '```\n\n'
-            printf 'The tag builds and publishes the release, and points `fork-version.json` at it.\n'
+            printf 'The tag builds and publishes the release, and points `update.json` at it.\n'
           } >"$RUNNER_TEMP/body.md"
 
           existing="$(gh issue list --label upstream-sync --state open --json number -q '.[0].number // empty')"

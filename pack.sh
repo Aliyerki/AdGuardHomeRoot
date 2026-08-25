@@ -4,7 +4,7 @@
 #
 # Usage: ./pack.sh [arm64|armv7] [version]   (default: arm64, today's date)
 #
-# Passing a version also refreshes fork-version.json, which is what the module
+# Passing a version also refreshes update.json, which is what the module
 # checks for updates. Leave it off for throwaway test builds.
 
 set -euo pipefail
@@ -48,9 +48,9 @@ cp -a src/. staging/
 cp "$CACHE_DIR/$ARCH/AdGuardHome/AdGuardHome" staging/bin/AdGuardHome
 
 if [ -n "$VERSION" ]; then
-  ./fork-brand.sh staging "$VERSION" fork-version.json
+  ./brand.sh staging "$VERSION" update.json
 else
-  ./fork-brand.sh staging
+  ./brand.sh staging
 fi
 
 echo "==> Building $OUT"
